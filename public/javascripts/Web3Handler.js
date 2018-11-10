@@ -32,6 +32,10 @@ module.exports = {
             {
                 // console.log("here is each function from abi: " + JSON.stringify(abi[i]));
                 arrayOfFunctionObjects.push(abi[i]);
+                if(abi[i].payable == true)
+                {
+                    arrayOfFunctionObjects.push({ "name": "value", "type": "uint256" })
+                }
             }
         }
         return arrayOfFunctionObjects;
@@ -63,11 +67,6 @@ module.exports = {
             else
             {
                 readOnlyParamInputs.push(false);
-                //add ability to attach ether to transaction
-                if(JSON.stringify(abiFunc).includes('"payable":true'))
-                {
-                    functionParams.push('{"name" : Optional_Ether_Amount, "type": uint256}');
-                }
             }
         }
         nameAndParamObj.names = functionNameFields;
@@ -89,10 +88,9 @@ module.exports = {
                 //last element is ether value
                 etherValue = parseInt(txObj.filledOutParams[txObj.filledOutParams.length - 1]);
                 txObj.filledOutParams.pop();
-                //TODO clean up logic
                 txObj.push({ value: etherValue });
             }
-            contract[txObj.functionCalled](txObj.filledOutParams, (err, data) =>
+            contract.methods[txObj.functionCalled](txObj.filledOutParams, (err, data) =>
             {
                 if(err) throw err;
                 cb(data)
@@ -100,7 +98,7 @@ module.exports = {
         }
         else
         {
-            contract[txObj.functionCalled]( (err, data) =>
+            contract.methods[txObj.functionCalled]((err, data) =>
             {
                 if(err) throw err;
                 cb(data)
@@ -111,7 +109,7 @@ module.exports = {
 
     checkAddressValidity : (web3, address) =>
     {
-        return web3.isAddress(address);
+        return web3.utils.isAddress(address);
     },
 
     sign : (web3, account, message, cb) =>

@@ -10,7 +10,7 @@ $(() =>
     {
         const injectedProvider = window.web3.currentProvider;
         web3 = new Web3(injectedProvider);
-        console.log("injected provider used: " + injectedProvider);
+        injectedProvider.enable();
     }
     else
     {
@@ -28,7 +28,7 @@ $(() =>
         {
             //must set the default account otherwise you can get unexpected errors
             web3.eth.defaultAccount = web3.eth.coinbase;
-            contract = web3.eth.contract(abi).at(contractAddress);
+            contract = new web3.eth.Contract(abi, contractAddress);
         }
         catch(exception)
         {
