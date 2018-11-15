@@ -1,14 +1,26 @@
 // Update with your config settings.
 //TODO patch up and make dynamic
 module.exports = {
+    // development: {
+    //     client: 'sqlite3',
+    //     connection: {
+    //         //relative to index route
+    //         filename: __dirname + "/dev.sqlite3"
+    //     }
+    // },
+    // useNullAsDefault: true,
+
     development: {
-        client: 'sqlite3',
-        connection: {
-            //relative to index route
-            filename: __dirname + "/dev.sqlite3"
-        }
+        client: 'pg',
+        connection:'postgres://localhost:8080/knex',
+        migrations: {
+            directory: './migrations'
+        },
+        seeds: {
+            directory: './seeds'
+        },
+        useNullAsDefault: true
     },
-    useNullAsDefault: true,
 
     production: {
         client: 'postgresql',
